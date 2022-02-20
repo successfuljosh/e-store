@@ -1,8 +1,10 @@
 from math import prod
 from unicodedata import category
+
 from django.shortcuts import get_object_or_404, render
+
 # from django.http import HttpResponse
-from .models import Product, Category
+from .models import Category, Product
 
 
 def get_categories(request):
