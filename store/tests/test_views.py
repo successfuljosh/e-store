@@ -1,4 +1,5 @@
 #pep8... separating the import sections
+from http.client import HTTP_PORT
 from unittest import skip
 
 from django.contrib.auth.models import User
@@ -35,7 +36,9 @@ class TestViewResponses(TestCase):
         """
         Test response from homepage and about page
         """
-        res = self.c.get('/')
+        res = self.c.get('/', HTTP_HOST = 'noadress.com')
+        self.assertEqual(res.status_code, 400) #status code for not allowed
+        res = self.c.get('/', HTTP_HOST = 'yourdomain.com')
         self.assertEqual(res.status_code, 200) #status code for successful response
         #test about page
         res = self.c.get('/about/')
@@ -66,7 +69,7 @@ class TestViewResponses(TestCase):
         self.assertEqual(response.status_code, 200)
     
     def test_view_function(self):
-        request = self.factory.get('/item/new-prod/')
+        request = self.factory.get('/new-prod/')
         response = all_products(request)
         html = response.content.decode('utf-8')
         self.assertIn('<title>E-Store Home</title>', html)

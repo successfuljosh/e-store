@@ -1,7 +1,14 @@
+from email.policy import default
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
+
+#model manager
+class ProductManager(models.Manager):
+    def get_queryset(self):
+        return super(ProductManager, self).get_queryset().filter(is_active = True)   #returns only active product
 
 # Create your models here.
 class Category(models.Model):
@@ -23,13 +30,15 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255, default='admin')
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='images/')  #stores the link in the db, requires pillow package
+    image = models.ImageField(upload_to='images/', default='images/default.png')  #stores the link in the db, requires pillow package
     slug = models.SlugField(max_length=255)
     price = models.DecimalField(max_digits=4, decimal_places=2)
     in_stock = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+    products = ProductManager()  #this replaces the objects in the query
 
     class Meta:
         verbose_name_plural = 'Products' 

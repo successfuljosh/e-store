@@ -1,5 +1,4 @@
 from math import prod
-from unicodedata import category
 
 from django.shortcuts import get_object_or_404, render
 
@@ -7,13 +6,9 @@ from django.shortcuts import get_object_or_404, render
 from .models import Category, Product
 
 
-def get_categories(request):
-    return {
-        'categories': Category.objects.all()
-    }
-
 def all_products(request):
-    products = Product.objects.all()
+    # products = Product.objects.all()
+    products = Product.products.all()
     return render(request, 'store/home.html', {'products': products})
 
 def about_us(request):

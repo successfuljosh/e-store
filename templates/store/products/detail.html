@@ -1,5 +1,7 @@
 {% extends '../base.html' %}
 
+{% block title %}{{ product.title  }}{% endblock  %}
+
 {% block content %}
 <div class="container">
     <main class="pt-5">
@@ -22,10 +24,17 @@
                         <div class="row p-3">
                             <div class="col-6">
                                 <label for="select">Qty</label>
-                                <input type="number" value="1"/>
+                                <select id = "select">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>    
                             </div>
                             <div class="col-6 text-end">
-                                <button class="btn btn-secondary">Add to basket</button>
+                                <button id="add-button" value="{{ product.id }}" class="btn btn-secondary">
+                                    Add to basket
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -35,5 +44,32 @@
     </main>
 </div>
 
+
+<script>
+    $(document).on('click', '#add-button', function (e){
+        e.preventDefault();
+        //console.log($('#select option:selected').val())
+        console.log($('#select option:selected').text())
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "basket:basket_add" %}',
+            data: {
+                'productid': $('#add-button').val(),
+                'productqty': $('#select').val(),
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'action': 'post'
+            },
+            success: function(json){
+                console.log(json)
+                document.getElementById('basket-qty').innerHTML = json.qty
+
+            },
+            error: function(xhr, errmsg, err){
+
+            }
+        });
+    })
+</script>
 
 {% endblock content %}
